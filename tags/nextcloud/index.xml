@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="utf-8" standalone="yes"?>
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
-    <title>Nextcloud on Terminal</title>
+    <title>Nextcloud on vnescape</title>
     <link>https://vnescape.github.io/tags/nextcloud/</link>
-    <description>Recent content in Nextcloud on Terminal</description>
+    <description>Recent content in Nextcloud on vnescape</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en</language>
     <lastBuildDate>Tue, 02 Jul 2024 18:26:04 +0200</lastBuildDate><atom:link href="https://vnescape.github.io/tags/nextcloud/index.xml" rel="self" type="application/rss+xml" />
