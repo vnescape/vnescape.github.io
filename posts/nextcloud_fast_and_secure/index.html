@@ -1,0 +1,374 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  
+    <title>Building a fast, zero trust and secure Nextcloud server :: Terminal</title>
+  
+  <meta http-equiv="content-type" content="text/html; charset=utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="How I build my nextcloud server infrastructure to be fast, secure and with no external trust." />
+<meta name="keywords" content=", " />
+
+  <meta name="robots" content="noodp" />
+
+<link rel="canonical" href="https://vnescape.github.io/posts/nextcloud_fast_and_secure/" />
+
+
+  
+
+
+
+
+
+
+  
+  
+  
+  
+  
+  <link rel="stylesheet" href="https://vnescape.github.io/styles.css">
+
+
+
+
+
+
+
+  <link rel="shortcut icon" href="https://vnescape.github.io/img/theme-colors/blue.png">
+  <link rel="apple-touch-icon" href="https://vnescape.github.io/img/theme-colors/blue.png">
+
+
+
+<meta name="twitter:card" content="summary" />
+
+  
+    <meta name="twitter:site" content="" />
+  
+    <meta name="twitter:creator" content="" />
+
+
+
+<meta property="og:locale" content="en" />
+<meta property="og:type" content="article" />
+<meta property="og:title" content="Building a fast, zero trust and secure Nextcloud server">
+<meta property="og:description" content="How I build my nextcloud server infrastructure to be fast, secure and with no external trust." />
+<meta property="og:url" content="https://vnescape.github.io/posts/nextcloud_fast_and_secure/" />
+<meta property="og:site_name" content="Terminal" />
+
+  
+  
+  <meta property="og:image" content="https://vnescape.github.io/">
+
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="627">
+
+
+  <meta property="article:published_time" content="2024-07-02 18:26:04 &#43;0200 CEST" />
+
+
+
+
+
+
+
+
+
+
+
+
+</head>
+<body class="blue">
+
+
+<div class="container center headings--one-size">
+
+  <header class="header">
+  <div class="header__inner">
+    <div class="header__logo">
+      <a href="/">
+  <div class="logo">
+    Terminal
+  </div>
+</a>
+
+    </div>
+    
+      <ul class="menu menu--mobile">
+  <li class="menu__trigger">Menu&nbsp;▾</li>
+  <li>
+    <ul class="menu__dropdown">
+      
+        
+          <li><a href="/about">About</a></li>
+        
+      
+        
+          <li><a href="/posts">Posts</a></li>
+        
+      
+      
+    </ul>
+  </li>
+</ul>
+
+    
+    
+  </div>
+  
+    <nav class="navigation-menu">
+  <ul class="navigation-menu__inner menu--desktop">
+    
+      
+        
+          <li><a href="/about" >About</a></li>
+        
+      
+        
+          <li><a href="/posts" >Posts</a></li>
+        
+      
+      
+    
+  </ul>
+</nav>
+
+  
+</header>
+
+
+  <div class="content">
+    
+<article class="post">
+  <h1 class="post-title">
+    <a href="https://vnescape.github.io/posts/nextcloud_fast_and_secure/">Building a fast, zero trust and secure Nextcloud server</a>
+  </h1>
+  <div class="post-meta"><time class="post-date">2024-07-02</time></div>
+
+  
+    <span class="post-tags">
+      
+      #<a href="https://vnescape.github.io/tags/nextcloud/">nextcloud</a>&nbsp;
+      
+      #<a href="https://vnescape.github.io/tags/rclone/">rclone</a>&nbsp;
+      
+      #<a href="https://vnescape.github.io/tags/smb/">smb</a>&nbsp;
+      
+      #<a href="https://vnescape.github.io/tags/linux/">linux</a>&nbsp;
+      
+    </span>
+  
+  
+
+
+  
+
+  <div class="post-content"><div>
+        <h2 id="why">Why?<a href="#why" class="hanchor" ariaLabel="Anchor">&#8983;</a> </h2>
+<p>Using cloud services is great. You can have your data in one place and you don&rsquo;t have to copy it between devices. But online cloud providers have some drawbacks. Mainly privacy and vendor lock-in. Most online cloud providers have access to your data, as you may want to back up sensitive content, this is a no go for me. Also, you can only choose between the cloud storage sizes offered, with no alternative to switching to cheaper storage down the line without changing the entire cloud provider and its software stack.</p>
+<blockquote>
+<p>Currently no solution is sufficient for my needs.</p>
+</blockquote>
+<h2 id="on-site-self-hosting">On site self hosting<a href="#on-site-self-hosting" class="hanchor" ariaLabel="Anchor">&#8983;</a> </h2>
+<p>One of the, if not the, most popular solutions to this problem is to host your own cloud. The advantage of this is that your data stays on your device and you can upgrade your storage or hardware as you wish. But with that power comes a lot of responsibility: you have to keep your hardware running, update the software, and deal with slow home internet speeds. The upfront costs can also be quite high.</p>
+<p>So self-hosting in your own home is less than ideal. What about using a VPS, i.e. a cloud computing provider? Here we have the problem that we don&rsquo;t have control over our data by default, as the cloud provider can technically inspect the data stored on their equipment.</p>
+<blockquote>
+<p>Self hosting is less than ideal most of the time. We want to use the cloud.</p>
+</blockquote>
+<h2 id="how-to-do-zero-trust-cloud-computing---defending-against-a-malicous-cloud-provider">How to do zero trust cloud computing? - defending against a malicous cloud provider<a href="#how-to-do-zero-trust-cloud-computing---defending-against-a-malicous-cloud-provider" class="hanchor" ariaLabel="Anchor">&#8983;</a> </h2>
+<p>First, there are two ways the data could be seen by the cloud provider in plain text: The hard drive or the RAM. We need to protect both from any external source so that only we have access to the data.</p>
+<blockquote>
+<p>Encrypt RAM, harddrive and any external storage.</p>
+</blockquote>
+<h2 id="encrypting-the-harddrive">Encrypting the harddrive<a href="#encrypting-the-harddrive" class="hanchor" ariaLabel="Anchor">&#8983;</a> </h2>
+<p>There is a great blog post that explains how to can enable <a href="https://community.hetzner.com/tutorials/install-ubuntu-2004-with-full-disk-encryption">full disk encryption on a cloud server</a>. This gives us the advantage that our data is encrypted at rest, but our server is running most of the time and needs to handle data as well as the encryption key somewhere in RAM. So how do we encrypt the RAM?</p>
+<h2 id="shifting-trust-to-the-silicon---amd-secure-encrypted-virtualization-sev">Shifting trust to the silicon - AMD Secure Encrypted Virtualization (SEV)<a href="#shifting-trust-to-the-silicon---amd-secure-encrypted-virtualization-sev" class="hanchor" ariaLabel="Anchor">&#8983;</a> </h2>
+<p>Basically, AMD SEV exposes the chip&rsquo;s ability to encrypt the virtual machine&rsquo;s RAM independently for each VM. This also protects the key from the hypervisor - in our case the cloud provider - so we can compute without the cloud provider knowing what data resides have in RAM.</p>
+<h2 id="encrypt-external-storage">Encrypt external storage<a href="#encrypt-external-storage" class="hanchor" ariaLabel="Anchor">&#8983;</a> </h2>
+<p>VPS storage can be quite expensive. Maybe you have some free cloud storage lying around from OneDrive or Google Drive. Or you might have bought a Hetzner storage box or some other external data storage. Most of them don&rsquo;t give you a way to run code to encrypt the storage yourself, for example. Wouldn&rsquo;t it be nice if we could somehow use this dumb storage to store our data and run our computing needs on a low storage VPS?</p>
+<p>The first problem we need to solve is: how do we mount/connect to the storage? <code>rclone</code> is a fantastic tool that can interface with most major cloud storage providers, so we can use rclone to mount our storage. However, for my external storage it was much faster to use <code>mount.cifs</code> to mount the storage using the SMB protocol. The command I use:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>mount.cifs -o user<span style="color:#f92672">=</span>username,pass<span style="color:#f92672">=</span>passw0rd //user.your-stroragedrive.com/folder /mnt/smb
+</span></span></code></pre></div><p>Now we need to encrypt the storage on our encrypted RAM, harddrive VPS before sending it to storage.</p>
+<p>rclone also provides a pipeline step to do just that: encrypt and decrypt storage requests using <code>rclone crypt</code>.</p>
+<p>Another problem we need to solve is that we want to use the storage as if it were a hard drive directly attached to our machine, so that nextcloud thinks it is not an external drive, because I find nextcloud&rsquo;s handling of external storage lackluster, we can do better! So, to make our I/O operations on our drive 100% reliable, we&rsquo;ll use the virtual filesystem feature for <code>rclone mount</code> to buffer all I/O operations.</p>
+<h2 id="making-all-of-it-fast---building-a-cache-hierachie">Making all of it fast - building a cache hierachie.<a href="#making-all-of-it-fast---building-a-cache-hierachie" class="hanchor" ariaLabel="Anchor">&#8983;</a> </h2>
+<p>We utilise different types of storage before our files and images are displayed by Nextloud. The storage hierarchy looks something like this:</p>
+<blockquote>
+<p>external storage &ndash;&gt; NVMe SSD &ndash;&gt; RAM</p>
+</blockquote>
+<p>To cache external storage I/O operations, we use the rclone vfs cache feature, so we can have a large cache, say 10GB, that can cache our latest photos and videos every time we view our timeline. To cache the files needed for nextcloud, we use reddis to cache those files in RAM. The command I use to mount the rclone vfs cache is as follows:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>rclone mount --daemon --vfs-cache-mode<span style="color:#f92672">=</span>full --allow-other --uid <span style="color:#ae81ff">33</span> --gid <span style="color:#ae81ff">33</span> --cache-dir /var/services/rclone/cache --vfs-cache-max-size 10G --vfs-read-ahead 32M --vfs-cache-max-age 72h --vfs-write-back 30s --dir-perms <span style="color:#ae81ff">0750</span> --file-perms <span style="color:#ae81ff">0644</span> storagebox_ENC: /var/services/rclone/decryptedStorage
+</span></span></code></pre></div><p>I changed the file and directory permissions so that the <code>www-data</code> user for the Nextcloud server can access our files.</p>
+<h2 id="making-the-server-secure---wireguard">Making the server secure - WireGuard<a href="#making-the-server-secure---wireguard" class="hanchor" ariaLabel="Anchor">&#8983;</a> </h2>
+<p>Personally, I don&rsquo;t trust Nextcloud or myself to keep up with all the latest emerging security threats (updating my server). So I don&rsquo;t want to expose my Nextcloud instance to the whole world wide web. Instead, I want to access it in an allow list fashion. So after enabling auto-update and only allowing public/private key authentication on my server, I also keep my Nextcloud instance behind a WireGuard VPN. Running all our traffic through WireGuard, as most tutorials on the web suggest, is a bit sub-optimal, as we only need to route the traffic to our server through WireGuard. This has the advantage that we can have our WireGuard connection open and always on, without the latency or speed penalty of using a VPN for all our traffic. So how do we do this? I will simply provide you with both the server and client configuration files for such a setup, as the WireGuard installation procedure is well documented online:</p>
+
+
+
+  <div class="collapsable-code">
+    <input id="1" type="checkbox"  />
+    <label for="1">
+      <span class="collapsable-code__language">VIM</span>
+      <span class="collapsable-code__title">wg0.conf</span>
+      <span class="collapsable-code__toggle" data-label-expand="Show" data-label-collapse="Hide"></span>
+    </label>
+    <pre class="language-VIM" ><code>
+    [Interface]
+    Address = 192.168.200.1/24 # the IP of the server
+    ListenPort = 51820
+
+    # Adjust your network interface. enp1s0 in my case
+    PrivateKey = your_private_key_of_wireguard
+    PostUp = iptables -A FORWARD -i %i -j ACCEPT; iptables -A FORWARD -o %i -j ACCEPT; iptables -t nat -A POSTROUTING -o enp1s0 -j MASQUERADE
+    PostDown = iptables -D FORWARD -i %i -j ACCEPT; iptables -D FORWARD -o %i -j ACCEPT; iptables -t nat -D POSTROUTING -o enp1s0 -j MASQUERADE
+
+    # each device needs its own private/public key pair!
+    # computer
+    [Peer]
+    PublicKey = public_key_of_computer
+    AllowedIPs = 192.168.200.2/32
+
+    # laptop
+    [Peer]
+    PublicKey = public_key_of_laptop
+    AllowedIPs = 192.168.200.3/32
+
+    # phone
+    [Peer]
+    PublicKey = public_key_of_phone
+    AllowedIPs = 192.168.200.4/32
+</code></pre>
+  </div>
+
+
+
+
+
+  <div class="collapsable-code">
+    <input id="1" type="checkbox"  />
+    <label for="1">
+      <span class="collapsable-code__language">VIM</span>
+      <span class="collapsable-code__title">computer.conf</span>
+      <span class="collapsable-code__toggle" data-label-expand="Show" data-label-collapse="Hide"></span>
+    </label>
+    <pre class="language-VIM" ><code>
+    [Interface]
+    PrivateKey = private_key_of_computer
+    Address = 192.168.200.6/32
+
+    [Peer]
+    PublicKey = public_key_of_server
+    AllowedIPs = 192.168.200.1/32 # this will route only traffic going to the server through WireGuard
+    Endpoint = server_ip:51820
+    PersistentKeepalive = 25
+</code></pre>
+  </div>
+
+
+<p>Make sure you set your firewall to only allow inbound traffic to the SSH port and the WireGuard port, and block all HTTP/S traffic coming from the Internet. Only allow HTTP traffic coming from the WireGuard tunnel.</p>
+<h2 id="installing-nextcloud">Installing Nextcloud<a href="#installing-nextcloud" class="hanchor" ariaLabel="Anchor">&#8983;</a> </h2>
+<p>I will only provide you with my <code>nextcloud.yml</code> file for my Docker Nextcloud instance as the installation process of Nextcloud is well documented online. Note that I installed aio-imaginary for faster preview image generation and ffmpeg in the Nextcloud image for hardware accelerated video encoding for streaming. But to be honest, these days I just stream my video files without re-encoding them first. The raw internet speed is just faster on my VPS rather than re-encoding the videos on the CPU.</p>
+
+
+
+  <div class="collapsable-code">
+    <input id="1" type="checkbox"  />
+    <label for="1">
+      <span class="collapsable-code__language">yaml</span>
+      <span class="collapsable-code__title">nextcloud.yml</span>
+      <span class="collapsable-code__toggle" data-label-expand="Show" data-label-collapse="Hide"></span>
+    </label>
+    <pre class="language-yaml" ><code>
+version: &#34;3&#34;
+services:
+
+  nextcloud:
+    image: mycloudy/nextcloud-ffmpeg
+    build: .
+    container_name: nextcloud
+    restart: no
+    volumes:
+      - /var/services/nextcloud:/var/www/html
+      - /var/services/rclone/decryptedStorage/nextCloudData:/data
+    ports:
+      - 192.168.200.1:80:80
+    depends_on:
+      - mysql8
+      - redis
+      - aio-imaginary
+
+  mysql8:
+    image: mysql:8
+    container_name: mysql8
+    volumes:
+      - /var/services/mysql:/var/lib/mysql
+    restart: no
+    environment:
+      MYSQL_ROOT_PASSWORD: your_mysql_password
+
+  redis:
+    image: redis:7
+    container_name: redis
+    volumes:
+      - /var/services/redis:/data
+    restart: no
+
+  aio-imaginary:
+    image: nextcloud/aio-imaginary:20230817_065941-latest
+    container_name: imaginary
+    cap_add:
+      - SYS_NICE
+    restart: no
+    environment:
+      - PORT=9000
+    ports:
+      - 9000:9000
+    command: -concurrency 50 -enable-url-source -log-level debug
+</code></pre>
+  </div>
+
+
+<h2 id="app-recommendation">App recommendation<a href="#app-recommendation" class="hanchor" ariaLabel="Anchor">&#8983;</a> </h2>
+<p>I recommend the Nextcloud app <a href="https://apps.nextcloud.com/apps/memories">memories</a> as it mimics the likes of Apple Photos or Google Photos and is just so much faster and more feature rich than Nextcloud Photos. On iOS, you can also place a PWA link to memories on your homescreen and interact with the site without the Safari UI bars.</p>
+<p>I would also recommend an alternative to the Nextcloud app&rsquo;s auto-upload for uploading images. Because the Nextcloud implementation is easily killed by iOS&rsquo;s limited background running and does not retry the next time it is opened. Also, the Nextcloud app on iOS is just horribly buggy. So I can recommend <a href="https://www.photosync-app.com/">PhotoSync</a> for uploading, it can sync in the background and just works.</p>
+
+      </div></div>
+
+  
+    
+  
+
+  
+    
+
+  
+</article>
+
+  </div>
+
+  
+    <footer class="footer">
+  <div class="footer__inner">
+    
+      <div class="copyright">
+        <span>© 2024 Powered by <a href="https://gohugo.io">Hugo</a></span>
+    
+      <span>:: <a href="https://github.com/panr/hugo-theme-terminal" target="_blank">Theme</a> made by <a href="https://github.com/panr" target="_blank">panr</a></span>
+      </div>
+  </div>
+</footer>
+
+
+
+
+
+
+<script type="text/javascript" src="/bundle.min.js"></script>
+
+
+
+
+
+  
+</div>
+
+</body>
+</html>

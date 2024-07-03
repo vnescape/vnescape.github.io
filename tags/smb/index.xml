@@ -1,0 +1,187 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Smb on Terminal</title>
+    <link>https://vnescape.github.io/tags/smb/</link>
+    <description>Recent content in Smb on Terminal</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en</language>
+    <lastBuildDate>Tue, 02 Jul 2024 18:26:04 +0200</lastBuildDate><atom:link href="https://vnescape.github.io/tags/smb/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>Building a fast, zero trust and secure Nextcloud server</title>
+      <link>https://vnescape.github.io/posts/nextcloud_fast_and_secure/</link>
+      <pubDate>Tue, 02 Jul 2024 18:26:04 +0200</pubDate>
+      
+      <guid>https://vnescape.github.io/posts/nextcloud_fast_and_secure/</guid>
+      <description>Why? Using cloud services is great. You can have your data in one place and you don&amp;rsquo;t have to copy it between devices. But online cloud providers have some drawbacks. Mainly privacy and vendor lock-in. Most online cloud providers have access to your data, as you may want to back up sensitive content, this is a no go for me. Also, you can only choose between the cloud storage sizes offered, with no alternative to switching to cheaper storage down the line without changing the entire cloud provider and its software stack.</description>
+      <content>&lt;h2 id=&#34;why&#34;&gt;Why?&lt;/h2&gt;
+&lt;p&gt;Using cloud services is great. You can have your data in one place and you don&amp;rsquo;t have to copy it between devices. But online cloud providers have some drawbacks. Mainly privacy and vendor lock-in. Most online cloud providers have access to your data, as you may want to back up sensitive content, this is a no go for me. Also, you can only choose between the cloud storage sizes offered, with no alternative to switching to cheaper storage down the line without changing the entire cloud provider and its software stack.&lt;/p&gt;
+&lt;blockquote&gt;
+&lt;p&gt;Currently no solution is sufficient for my needs.&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;h2 id=&#34;on-site-self-hosting&#34;&gt;On site self hosting&lt;/h2&gt;
+&lt;p&gt;One of the, if not the, most popular solutions to this problem is to host your own cloud. The advantage of this is that your data stays on your device and you can upgrade your storage or hardware as you wish. But with that power comes a lot of responsibility: you have to keep your hardware running, update the software, and deal with slow home internet speeds. The upfront costs can also be quite high.&lt;/p&gt;
+&lt;p&gt;So self-hosting in your own home is less than ideal. What about using a VPS, i.e. a cloud computing provider? Here we have the problem that we don&amp;rsquo;t have control over our data by default, as the cloud provider can technically inspect the data stored on their equipment.&lt;/p&gt;
+&lt;blockquote&gt;
+&lt;p&gt;Self hosting is less than ideal most of the time. We want to use the cloud.&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;h2 id=&#34;how-to-do-zero-trust-cloud-computing---defending-against-a-malicous-cloud-provider&#34;&gt;How to do zero trust cloud computing? - defending against a malicous cloud provider&lt;/h2&gt;
+&lt;p&gt;First, there are two ways the data could be seen by the cloud provider in plain text: The hard drive or the RAM. We need to protect both from any external source so that only we have access to the data.&lt;/p&gt;
+&lt;blockquote&gt;
+&lt;p&gt;Encrypt RAM, harddrive and any external storage.&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;h2 id=&#34;encrypting-the-harddrive&#34;&gt;Encrypting the harddrive&lt;/h2&gt;
+&lt;p&gt;There is a great blog post that explains how to can enable &lt;a href=&#34;https://community.hetzner.com/tutorials/install-ubuntu-2004-with-full-disk-encryption&#34;&gt;full disk encryption on a cloud server&lt;/a&gt;. This gives us the advantage that our data is encrypted at rest, but our server is running most of the time and needs to handle data as well as the encryption key somewhere in RAM. So how do we encrypt the RAM?&lt;/p&gt;
+&lt;h2 id=&#34;shifting-trust-to-the-silicon---amd-secure-encrypted-virtualization-sev&#34;&gt;Shifting trust to the silicon - AMD Secure Encrypted Virtualization (SEV)&lt;/h2&gt;
+&lt;p&gt;Basically, AMD SEV exposes the chip&amp;rsquo;s ability to encrypt the virtual machine&amp;rsquo;s RAM independently for each VM. This also protects the key from the hypervisor - in our case the cloud provider - so we can compute without the cloud provider knowing what data resides have in RAM.&lt;/p&gt;
+&lt;h2 id=&#34;encrypt-external-storage&#34;&gt;Encrypt external storage&lt;/h2&gt;
+&lt;p&gt;VPS storage can be quite expensive. Maybe you have some free cloud storage lying around from OneDrive or Google Drive. Or you might have bought a Hetzner storage box or some other external data storage. Most of them don&amp;rsquo;t give you a way to run code to encrypt the storage yourself, for example. Wouldn&amp;rsquo;t it be nice if we could somehow use this dumb storage to store our data and run our computing needs on a low storage VPS?&lt;/p&gt;
+&lt;p&gt;The first problem we need to solve is: how do we mount/connect to the storage? &lt;code&gt;rclone&lt;/code&gt; is a fantastic tool that can interface with most major cloud storage providers, so we can use rclone to mount our storage. However, for my external storage it was much faster to use &lt;code&gt;mount.cifs&lt;/code&gt; to mount the storage using the SMB protocol. The command I use:&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;&#34;&gt;&lt;code class=&#34;language-bash&#34; data-lang=&#34;bash&#34;&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;mount.cifs -o user&lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt;username,pass&lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt;passw0rd //user.your-stroragedrive.com/folder /mnt/smb
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;Now we need to encrypt the storage on our encrypted RAM, harddrive VPS before sending it to storage.&lt;/p&gt;
+&lt;p&gt;rclone also provides a pipeline step to do just that: encrypt and decrypt storage requests using &lt;code&gt;rclone crypt&lt;/code&gt;.&lt;/p&gt;
+&lt;p&gt;Another problem we need to solve is that we want to use the storage as if it were a hard drive directly attached to our machine, so that nextcloud thinks it is not an external drive, because I find nextcloud&amp;rsquo;s handling of external storage lackluster, we can do better! So, to make our I/O operations on our drive 100% reliable, we&amp;rsquo;ll use the virtual filesystem feature for &lt;code&gt;rclone mount&lt;/code&gt; to buffer all I/O operations.&lt;/p&gt;
+&lt;h2 id=&#34;making-all-of-it-fast---building-a-cache-hierachie&#34;&gt;Making all of it fast - building a cache hierachie.&lt;/h2&gt;
+&lt;p&gt;We utilise different types of storage before our files and images are displayed by Nextloud. The storage hierarchy looks something like this:&lt;/p&gt;
+&lt;blockquote&gt;
+&lt;p&gt;external storage &amp;ndash;&amp;gt; NVMe SSD &amp;ndash;&amp;gt; RAM&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;p&gt;To cache external storage I/O operations, we use the rclone vfs cache feature, so we can have a large cache, say 10GB, that can cache our latest photos and videos every time we view our timeline. To cache the files needed for nextcloud, we use reddis to cache those files in RAM. The command I use to mount the rclone vfs cache is as follows:&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;&#34;&gt;&lt;code class=&#34;language-bash&#34; data-lang=&#34;bash&#34;&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;rclone mount --daemon --vfs-cache-mode&lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt;full --allow-other --uid &lt;span style=&#34;color:#ae81ff&#34;&gt;33&lt;/span&gt; --gid &lt;span style=&#34;color:#ae81ff&#34;&gt;33&lt;/span&gt; --cache-dir /var/services/rclone/cache --vfs-cache-max-size 10G --vfs-read-ahead 32M --vfs-cache-max-age 72h --vfs-write-back 30s --dir-perms &lt;span style=&#34;color:#ae81ff&#34;&gt;0750&lt;/span&gt; --file-perms &lt;span style=&#34;color:#ae81ff&#34;&gt;0644&lt;/span&gt; storagebox_ENC: /var/services/rclone/decryptedStorage
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;I changed the file and directory permissions so that the &lt;code&gt;www-data&lt;/code&gt; user for the Nextcloud server can access our files.&lt;/p&gt;
+&lt;h2 id=&#34;making-the-server-secure---wireguard&#34;&gt;Making the server secure - WireGuard&lt;/h2&gt;
+&lt;p&gt;Personally, I don&amp;rsquo;t trust Nextcloud or myself to keep up with all the latest emerging security threats (updating my server). So I don&amp;rsquo;t want to expose my Nextcloud instance to the whole world wide web. Instead, I want to access it in an allow list fashion. So after enabling auto-update and only allowing public/private key authentication on my server, I also keep my Nextcloud instance behind a WireGuard VPN. Running all our traffic through WireGuard, as most tutorials on the web suggest, is a bit sub-optimal, as we only need to route the traffic to our server through WireGuard. This has the advantage that we can have our WireGuard connection open and always on, without the latency or speed penalty of using a VPN for all our traffic. So how do we do this? I will simply provide you with both the server and client configuration files for such a setup, as the WireGuard installation procedure is well documented online:&lt;/p&gt;
+
+
+
+  &lt;div class=&#34;collapsable-code&#34;&gt;
+    &lt;input id=&#34;1&#34; type=&#34;checkbox&#34;  /&gt;
+    &lt;label for=&#34;1&#34;&gt;
+      &lt;span class=&#34;collapsable-code__language&#34;&gt;VIM&lt;/span&gt;
+      &lt;span class=&#34;collapsable-code__title&#34;&gt;wg0.conf&lt;/span&gt;
+      &lt;span class=&#34;collapsable-code__toggle&#34; data-label-expand=&#34;Show&#34; data-label-collapse=&#34;Hide&#34;&gt;&lt;/span&gt;
+    &lt;/label&gt;
+    &lt;pre class=&#34;language-VIM&#34; &gt;&lt;code&gt;
+    [Interface]
+    Address = 192.168.200.1/24 # the IP of the server
+    ListenPort = 51820
+
+    # Adjust your network interface. enp1s0 in my case
+    PrivateKey = your_private_key_of_wireguard
+    PostUp = iptables -A FORWARD -i %i -j ACCEPT; iptables -A FORWARD -o %i -j ACCEPT; iptables -t nat -A POSTROUTING -o enp1s0 -j MASQUERADE
+    PostDown = iptables -D FORWARD -i %i -j ACCEPT; iptables -D FORWARD -o %i -j ACCEPT; iptables -t nat -D POSTROUTING -o enp1s0 -j MASQUERADE
+
+    # each device needs its own private/public key pair!
+    # computer
+    [Peer]
+    PublicKey = public_key_of_computer
+    AllowedIPs = 192.168.200.2/32
+
+    # laptop
+    [Peer]
+    PublicKey = public_key_of_laptop
+    AllowedIPs = 192.168.200.3/32
+
+    # phone
+    [Peer]
+    PublicKey = public_key_of_phone
+    AllowedIPs = 192.168.200.4/32
+&lt;/code&gt;&lt;/pre&gt;
+  &lt;/div&gt;
+
+
+
+
+
+  &lt;div class=&#34;collapsable-code&#34;&gt;
+    &lt;input id=&#34;1&#34; type=&#34;checkbox&#34;  /&gt;
+    &lt;label for=&#34;1&#34;&gt;
+      &lt;span class=&#34;collapsable-code__language&#34;&gt;VIM&lt;/span&gt;
+      &lt;span class=&#34;collapsable-code__title&#34;&gt;computer.conf&lt;/span&gt;
+      &lt;span class=&#34;collapsable-code__toggle&#34; data-label-expand=&#34;Show&#34; data-label-collapse=&#34;Hide&#34;&gt;&lt;/span&gt;
+    &lt;/label&gt;
+    &lt;pre class=&#34;language-VIM&#34; &gt;&lt;code&gt;
+    [Interface]
+    PrivateKey = private_key_of_computer
+    Address = 192.168.200.6/32
+
+    [Peer]
+    PublicKey = public_key_of_server
+    AllowedIPs = 192.168.200.1/32 # this will route only traffic going to the server through WireGuard
+    Endpoint = server_ip:51820
+    PersistentKeepalive = 25
+&lt;/code&gt;&lt;/pre&gt;
+  &lt;/div&gt;
+
+
+&lt;p&gt;Make sure you set your firewall to only allow inbound traffic to the SSH port and the WireGuard port, and block all HTTP/S traffic coming from the Internet. Only allow HTTP traffic coming from the WireGuard tunnel.&lt;/p&gt;
+&lt;h2 id=&#34;installing-nextcloud&#34;&gt;Installing Nextcloud&lt;/h2&gt;
+&lt;p&gt;I will only provide you with my &lt;code&gt;nextcloud.yml&lt;/code&gt; file for my Docker Nextcloud instance as the installation process of Nextcloud is well documented online. Note that I installed aio-imaginary for faster preview image generation and ffmpeg in the Nextcloud image for hardware accelerated video encoding for streaming. But to be honest, these days I just stream my video files without re-encoding them first. The raw internet speed is just faster on my VPS rather than re-encoding the videos on the CPU.&lt;/p&gt;
+
+
+
+  &lt;div class=&#34;collapsable-code&#34;&gt;
+    &lt;input id=&#34;1&#34; type=&#34;checkbox&#34;  /&gt;
+    &lt;label for=&#34;1&#34;&gt;
+      &lt;span class=&#34;collapsable-code__language&#34;&gt;yaml&lt;/span&gt;
+      &lt;span class=&#34;collapsable-code__title&#34;&gt;nextcloud.yml&lt;/span&gt;
+      &lt;span class=&#34;collapsable-code__toggle&#34; data-label-expand=&#34;Show&#34; data-label-collapse=&#34;Hide&#34;&gt;&lt;/span&gt;
+    &lt;/label&gt;
+    &lt;pre class=&#34;language-yaml&#34; &gt;&lt;code&gt;
+version: &amp;#34;3&amp;#34;
+services:
+
+  nextcloud:
+    image: mycloudy/nextcloud-ffmpeg
+    build: .
+    container_name: nextcloud
+    restart: no
+    volumes:
+      - /var/services/nextcloud:/var/www/html
+      - /var/services/rclone/decryptedStorage/nextCloudData:/data
+    ports:
+      - 192.168.200.1:80:80
+    depends_on:
+      - mysql8
+      - redis
+      - aio-imaginary
+
+  mysql8:
+    image: mysql:8
+    container_name: mysql8
+    volumes:
+      - /var/services/mysql:/var/lib/mysql
+    restart: no
+    environment:
+      MYSQL_ROOT_PASSWORD: your_mysql_password
+
+  redis:
+    image: redis:7
+    container_name: redis
+    volumes:
+      - /var/services/redis:/data
+    restart: no
+
+  aio-imaginary:
+    image: nextcloud/aio-imaginary:20230817_065941-latest
+    container_name: imaginary
+    cap_add:
+      - SYS_NICE
+    restart: no
+    environment:
+      - PORT=9000
+    ports:
+      - 9000:9000
+    command: -concurrency 50 -enable-url-source -log-level debug
+&lt;/code&gt;&lt;/pre&gt;
+  &lt;/div&gt;
+
+
+&lt;h2 id=&#34;app-recommendation&#34;&gt;App recommendation&lt;/h2&gt;
+&lt;p&gt;I recommend the Nextcloud app &lt;a href=&#34;https://apps.nextcloud.com/apps/memories&#34;&gt;memories&lt;/a&gt; as it mimics the likes of Apple Photos or Google Photos and is just so much faster and more feature rich than Nextcloud Photos. On iOS, you can also place a PWA link to memories on your homescreen and interact with the site without the Safari UI bars.&lt;/p&gt;
+&lt;p&gt;I would also recommend an alternative to the Nextcloud app&amp;rsquo;s auto-upload for uploading images. Because the Nextcloud implementation is easily killed by iOS&amp;rsquo;s limited background running and does not retry the next time it is opened. Also, the Nextcloud app on iOS is just horribly buggy. So I can recommend &lt;a href=&#34;https://www.photosync-app.com/&#34;&gt;PhotoSync&lt;/a&gt; for uploading, it can sync in the background and just works.&lt;/p&gt;
+</content>
+    </item>
+    
+  </channel>
+</rss>
