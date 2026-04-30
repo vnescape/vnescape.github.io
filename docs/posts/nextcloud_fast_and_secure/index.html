@@ -7,7 +7,7 @@
   <meta http-equiv="content-type" content="text/html; charset=utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta name="description" content="How I build my nextcloud server infrastructure to be fast, secure and with no external trust." />
-<meta name="keywords" content=", " />
+<meta name="keywords" content="" />
 
   <meta name="robots" content="noodp" />
 
@@ -59,7 +59,7 @@
 
 
 
-
+<link rel="stylesheet" href="https://vnescape.github.io/style.css">
 
 
 <link rel="shortcut icon" href="https://vnescape.github.io/favicon.png">
@@ -71,7 +71,7 @@
   
     <meta name="twitter:site" content="" />
   
-    <meta name="twitter:creator" content="" />
+    <meta name="twitter:creator" content="vnescape" />
 
 
 
@@ -82,9 +82,7 @@
 <meta property="og:url" content="https://vnescape.github.io/posts/nextcloud_fast_and_secure/" />
 <meta property="og:site_name" content="vnescape" />
 
-  
-  
-  <meta property="og:image" content="https://vnescape.github.io/">
+  <meta property="og:image" content="https://vnescape.github.io/og-image.png">
 
 <meta property="og:image:width" content="1200">
 <meta property="og:image:height" content="627">
@@ -169,7 +167,7 @@
   <h1 class="post-title">
     <a href="https://vnescape.github.io/posts/nextcloud_fast_and_secure/">Building a fast, zero trust and secure Nextcloud server</a>
   </h1>
-  <div class="post-meta"><time class="post-date">2024-07-02</time></div>
+  <div class="post-meta"><time class="post-date">2024-07-02</time><span class="post-author">vnescape</span></div>
 
   
     <span class="post-tags">
@@ -232,7 +230,7 @@
 
 <details class="collapsable-code" >
     <summary title="Click to interact"><span class="collapsable-code__title">wg0.conf</span></summary>
-    <div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"><code class="language-VIM" data-lang="VIM"><span style="display:flex;"><span>    [<span style="color:#a6e22e">Interface</span>]
+    <div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"><code class="language-vim" data-lang="vim"><span style="display:flex;"><span>    [<span style="color:#a6e22e">Interface</span>]
 </span></span><span style="display:flex;"><span>    <span style="color:#a6e22e">Address</span> = <span style="color:#ae81ff">192</span>.<span style="color:#ae81ff">168</span>.<span style="color:#ae81ff">200</span>.<span style="color:#ae81ff">1</span>/<span style="color:#ae81ff">24</span> # <span style="color:#a6e22e">the</span> <span style="color:#a6e22e">IP</span> <span style="color:#a6e22e">of</span> <span style="color:#a6e22e">the</span> <span style="color:#a6e22e">server</span>
 </span></span><span style="display:flex;"><span>    <span style="color:#a6e22e">ListenPort</span> = <span style="color:#ae81ff">51820</span>
 </span></span><span style="display:flex;"><span>
@@ -262,7 +260,7 @@
 
 <details class="collapsable-code" >
     <summary title="Click to interact"><span class="collapsable-code__title">computer.conf</span></summary>
-    <div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"><code class="language-VIM" data-lang="VIM"><span style="display:flex;"><span>    [<span style="color:#a6e22e">Interface</span>]
+    <div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"><code class="language-vim" data-lang="vim"><span style="display:flex;"><span>    [<span style="color:#a6e22e">Interface</span>]
 </span></span><span style="display:flex;"><span>    <span style="color:#a6e22e">PrivateKey</span> = <span style="color:#a6e22e">private_key_of_computer</span>
 </span></span><span style="display:flex;"><span>    <span style="color:#a6e22e">Address</span> = <span style="color:#ae81ff">192</span>.<span style="color:#ae81ff">168</span>.<span style="color:#ae81ff">200</span>.<span style="color:#ae81ff">6</span>/<span style="color:#ae81ff">32</span>
 </span></span><span style="display:flex;"><span>

@@ -1,11 +1,8 @@
 +++
 title = "Building a fast, zero trust and secure Nextcloud server"
 date = "2024-07-02T18:26:04+02:00"
-author = ""
-authorTwitter = "" #do not include @
-cover = ""
+author = "vnescape"
 tags = ["nextcloud", "rclone", "smb", "linux"]
-keywords = ["", ""]
 description = "How I build my nextcloud server infrastructure to be fast, secure and with no external trust."
 showFullContent = false
 readingTime = false
@@ -76,7 +73,7 @@ I changed the file and directory permissions so that the `www-data` user for the
 
 Personally, I don't trust Nextcloud or myself to keep up with all the latest emerging security threats (updating my server). So I don't want to expose my Nextcloud instance to the whole world wide web. Instead, I want to access it in an allow list fashion. So after enabling auto-update and only allowing public/private key authentication on my server, I also keep my Nextcloud instance behind a WireGuard VPN. Running all our traffic through WireGuard, as most tutorials on the web suggest, is a bit sub-optimal, as we only need to route the traffic to our server through WireGuard. This has the advantage that we can have our WireGuard connection open and always on, without the latency or speed penalty of using a VPN for all our traffic. So how do we do this? I will simply provide you with both the server and client configuration files for such a setup, as the WireGuard installation procedure is well documented online:
 
-{{< code language="VIM" title="wg0.conf" id="1" expand="Show" collapse="Hide" isCollapsed="false" >}}
+{{< code language="vim" title="wg0.conf" id="1" expand="Show" collapse="Hide" isCollapsed="false" >}}
     [Interface]
     Address = 192.168.200.1/24 # the IP of the server
     ListenPort = 51820
@@ -104,7 +101,7 @@ Personally, I don't trust Nextcloud or myself to keep up with all the latest eme
 {{< /code >}}
 
 
-{{< code language="VIM" title="computer.conf" id="1" expand="Show" collapse="Hide" isCollapsed="false" >}}
+{{< code language="vim" title="computer.conf" id="1" expand="Show" collapse="Hide" isCollapsed="false" >}}
     [Interface]
     PrivateKey = private_key_of_computer
     Address = 192.168.200.6/32

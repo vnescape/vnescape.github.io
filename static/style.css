@@ -1,0 +1,420 @@
+/* static/style.css */
+
+/* ------------------------------
+   Base theme: dark mode default
+   ------------------------------ */
+
+:root {
+  color-scheme: dark light;
+
+  --background: #11100e;
+  --foreground: #e8e2d8;
+  --accent: #ff7a1a;
+  --accent-contrast-color: #11100e;
+
+  --code-bg: #1b1815;
+  --code-fg: #f2e9dd;
+  --code-border: rgba(255, 122, 26, 0.35);
+  --code-muted: rgba(242, 233, 221, 0.58);
+  --code-keyword: #ff9a3c;
+  --code-string: #ffd0a3;
+}
+
+/* ------------------------------
+   Auto light mode
+   ------------------------------ */
+
+@media (prefers-color-scheme: light) {
+  :root {
+    color-scheme: light dark;
+
+    --background: #f6f0e7;
+    --foreground: #1d1813;
+    --accent: #ff7a1a;
+    --accent-contrast-color: #1d1813;
+
+    --code-bg: #fff8ef;
+    --code-fg: #211914;
+    --code-border: rgba(255, 122, 26, 0.35);
+    --code-muted: #6d6258;
+    --code-keyword: #9c3f00;
+    --code-string: #6f3f12;
+  }
+}
+
+/* ------------------------------
+   General page colors
+   ------------------------------ */
+
+html,
+body {
+  background: var(--background);
+  color: var(--foreground);
+}
+
+body {
+  color: var(--foreground);
+}
+
+/* ------------------------------
+   Links
+   Keep orange, never fill background
+   ------------------------------ */
+
+a,
+a:visited,
+a:hover,
+a:focus,
+a:active {
+  color: var(--accent) !important;
+  background: transparent !important;
+  text-decoration-thickness: 1px;
+  text-underline-offset: 3px;
+}
+
+a:hover,
+a:focus {
+  text-decoration: underline;
+  text-decoration-thickness: 2px;
+  text-underline-offset: 4px;
+  text-decoration-color: var(--accent);
+}
+
+/* ------------------------------
+   Header / menu / logo
+   ------------------------------ */
+
+.logo__text,
+.logo__mark,
+.menu__inner a,
+.post-meta {
+  color: var(--accent) !important;
+  background: transparent !important;
+}
+
+.menu__inner a:hover,
+.menu__inner a:focus {
+  color: var(--accent) !important;
+  background: transparent !important;
+  text-decoration: underline;
+  text-decoration-thickness: 2px;
+  text-underline-offset: 4px;
+}
+
+/* ------------------------------
+   Post titles
+   Always orange, no orange background
+   ------------------------------ */
+
+.post-title,
+.post-title a,
+.post-title a:visited,
+.post-title a:hover,
+.post-title a:focus,
+.post-title a:active,
+.posts .post-title,
+.posts .post-title a,
+.posts .post-title a:hover,
+.post .post-title,
+.post .post-title a,
+.post .post-title a:hover,
+h1.post-title,
+h1.post-title a,
+h1.post-title a:hover,
+h2.post-title,
+h2.post-title a,
+h2.post-title a:hover {
+  color: var(--accent) !important;
+  background: transparent !important;
+}
+
+.post-title a:hover,
+.post-title a:focus,
+.posts .post-title a:hover,
+.posts .post-title a:focus,
+.post .post-title a:hover,
+.post .post-title a:focus,
+h1.post-title a:hover,
+h1.post-title a:focus,
+h2.post-title a:hover,
+h2.post-title a:focus {
+  text-decoration: underline !important;
+  text-decoration-thickness: 2px;
+  text-underline-offset: 4px;
+  text-decoration-color: var(--accent);
+}
+
+/* ------------------------------
+   Post content
+   ------------------------------ */
+
+.post-content,
+.post-content p,
+.post-content li,
+.post-content td,
+.post-content th {
+  color: var(--foreground);
+}
+
+/* ------------------------------
+   Inline code
+   ------------------------------ */
+
+code,
+kbd {
+  background: var(--code-bg) !important;
+  color: var(--code-fg) !important;
+  border: 1px solid var(--code-border) !important;
+}
+
+/* ------------------------------
+   Code blocks
+   ------------------------------ */
+
+pre,
+.chroma,
+.highlight,
+.highlight pre,
+.highlight code,
+.code,
+.code pre,
+.code code,
+.code__content,
+.code__content pre,
+.code__content code,
+.collapsable-code,
+.collapsable-code pre,
+.collapsable-code code {
+  background: var(--code-bg) !important;
+  color: var(--code-fg) !important;
+  border-color: var(--code-border) !important;
+}
+
+/* Code inside blocks should not get extra inline-code boxes */
+
+pre code,
+.chroma code,
+.highlight code,
+.code pre code,
+.code__content pre code,
+.collapsable-code pre code {
+  background: transparent !important;
+  color: var(--code-fg) !important;
+  border: 0 !important;
+}
+
+/* ------------------------------
+   Chroma syntax highlighting
+   ------------------------------ */
+
+/* Default syntax text */
+
+.chroma span,
+.highlight span,
+pre span,
+code span {
+  color: var(--code-fg);
+  background: transparent;
+}
+
+/* Comments */
+
+.chroma .c,
+.chroma .c1,
+.chroma .cm,
+.chroma .cp,
+.chroma .cs,
+.chroma .ch {
+  color: var(--code-muted) !important;
+  font-style: italic;
+}
+
+/* Keywords, functions, tags, attributes */
+
+.chroma .k,
+.chroma .kc,
+.chroma .kd,
+.chroma .kn,
+.chroma .kp,
+.chroma .kr,
+.chroma .kt,
+.chroma .nf,
+.chroma .na,
+.chroma .nb,
+.chroma .nt {
+  color: var(--code-keyword) !important;
+  font-weight: 600;
+}
+
+/* Strings */
+
+.chroma .s,
+.chroma .s1,
+.chroma .s2,
+.chroma .se,
+.chroma .sh,
+.chroma .sx,
+.chroma .sr,
+.chroma .dl {
+  color: var(--code-string) !important;
+}
+
+/* Numbers, operators, punctuation */
+
+.chroma .m,
+.chroma .mi,
+.chroma .mf,
+.chroma .mh,
+.chroma .mo,
+.chroma .o,
+.chroma .p {
+  color: var(--code-fg) !important;
+}
+
+/* Variables and names */
+
+.chroma .n,
+.chroma .nv,
+.chroma .nx,
+.chroma .vg,
+.chroma .vi,
+.chroma .vm {
+  color: var(--code-fg) !important;
+}
+
+/* Line numbers */
+
+.chroma .ln,
+.chroma .lnt,
+.chroma .lnlinks {
+  color: var(--code-muted) !important;
+}
+
+/* ------------------------------
+   Terminal theme collapsible code shortcode
+   ------------------------------ */
+
+details,
+summary,
+.collapsable-code,
+.collapsable-code summary,
+.collapsable-code .collapsable-code__title,
+.collapsable-code .collapsable-code__language,
+.collapsable-code .collapsable-code__toggle {
+  background: var(--code-bg) !important;
+  color: var(--code-fg) !important;
+  border-color: var(--code-border) !important;
+}
+
+summary,
+.collapsable-code summary,
+.collapsable-code .collapsable-code__title {
+  color: var(--accent) !important;
+  cursor: pointer;
+}
+
+/* ------------------------------
+   Stronger light-mode code fix
+   Prevent neon green / low contrast
+   ------------------------------ */
+
+@media (prefers-color-scheme: light) {
+  pre,
+  code,
+  kbd,
+  .highlight,
+  .highlight pre,
+  .highlight code,
+  .chroma,
+  .chroma code,
+  .code,
+  .code pre,
+  .code code,
+  .code__content,
+  .code__content pre,
+  .code__content code,
+  .collapsable-code,
+  .collapsable-code pre,
+  .collapsable-code code {
+    background: #fff8ef !important;
+    color: #211914 !important;
+    border-color: rgba(255, 122, 26, 0.35) !important;
+  }
+
+  pre span,
+  code span,
+  .highlight span,
+  .chroma span,
+  .code span,
+  .code__content span,
+  .collapsable-code span {
+    color: #211914 !important;
+    background: transparent !important;
+  }
+
+  .chroma .c,
+  .chroma .c1,
+  .chroma .cm,
+  .chroma .cp,
+  .chroma .cs,
+  .chroma .ch {
+    color: #6d6258 !important;
+    font-style: italic;
+  }
+
+  .chroma .k,
+  .chroma .kc,
+  .chroma .kd,
+  .chroma .kn,
+  .chroma .kp,
+  .chroma .kr,
+  .chroma .kt,
+  .chroma .nf,
+  .chroma .na,
+  .chroma .nb,
+  .chroma .nt {
+    color: #9c3f00 !important;
+    font-weight: 600;
+  }
+
+  .chroma .s,
+  .chroma .s1,
+  .chroma .s2,
+  .chroma .se,
+  .chroma .sh,
+  .chroma .sx,
+  .chroma .sr,
+  .chroma .dl {
+    color: #6f3f12 !important;
+  }
+
+  .chroma .ln,
+  .chroma .lnt,
+  .chroma .lnlinks {
+    color: #8a7b6e !important;
+  }
+}
+
+/* ------------------------------
+   Blockquotes / tables / borders
+   ------------------------------ */
+
+blockquote {
+  color: var(--foreground);
+  border-left-color: var(--accent);
+}
+
+table,
+th,
+td {
+  border-color: rgba(255, 122, 26, 0.28);
+}
+
+/* ------------------------------
+   Selection
+   ------------------------------ */
+
+::selection {
+  background: rgba(255, 122, 26, 0.32);
+  color: var(--foreground);
+}

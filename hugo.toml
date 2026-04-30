@@ -5,11 +5,14 @@ languageCode = "en-us"
 theme = "terminal"
 paginate = 5
 publishDir = "docs"
+defaultContentLanguage = "en"
 
 [params]
   # dir name of your main content (default is `content/posts`).
   # the list of set content will show up on your index page (baseurl).
   contentTypeName = "posts"
+
+  readMore = "Read more"
 
   # ["orange", "blue", "red", "green", "pink"]
   themeColor = "blue"
