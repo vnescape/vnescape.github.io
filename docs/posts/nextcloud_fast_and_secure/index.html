@@ -1,0 +1,373 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  
+    <title>Building a fast, zero trust and secure Nextcloud server :: vnescape</title>
+  
+  <meta http-equiv="content-type" content="text/html; charset=utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="How I build my nextcloud server infrastructure to be fast, secure and with no external trust." />
+<meta name="keywords" content=", " />
+
+  <meta name="robots" content="noodp" />
+
+<link rel="canonical" href="https://vnescape.github.io/posts/nextcloud_fast_and_secure/" />
+
+
+
+
+
+  
+  <link rel="stylesheet" href="https://vnescape.github.io/css/buttons.min.86f6b4c106b6c6eb690ae5203d36b442c1f66f718ff4e8164fa86cf6c61ad641.css">
+
+  
+  <link rel="stylesheet" href="https://vnescape.github.io/css/code.min.c4581949edab7810737609fc5568852bcd908945f14561e366dcd2300a370545.css">
+
+  
+  <link rel="stylesheet" href="https://vnescape.github.io/css/fonts.min.5bb7ed13e1d00d8ff39ea84af26737007eb5051b157b86fc24487c94f3dc8bbe.css">
+
+  
+  <link rel="stylesheet" href="https://vnescape.github.io/css/footer.min.eb8dfc2c6a7eafa36cd3ba92d63e69e849e2200e0002a228d137f236b09ecd75.css">
+
+  
+  <link rel="stylesheet" href="https://vnescape.github.io/css/gist.min.a751e8b0abe1ba8bc53ced52a38b19d8950fe78ca29454ea8c2595cf26aad5c0.css">
+
+  
+  <link rel="stylesheet" href="https://vnescape.github.io/css/header.min.75c7eb0e2872d95ff48109c6647d0223a38db52e2561dd87966eb5fc7c6bdac6.css">
+
+  
+  <link rel="stylesheet" href="https://vnescape.github.io/css/main.min.36833afd348409fc6c3d09d0897c5833d9d5bf1ff31f5e60ea3ee42ce2b1268c.css">
+
+  
+  <link rel="stylesheet" href="https://vnescape.github.io/css/menu.min.3c17467ebeb3d38663dce68f71f519901124fa5cbb4519b2fb0667a21e9aca39.css">
+
+  
+  <link rel="stylesheet" href="https://vnescape.github.io/css/pagination.min.bbb986dbce00a5ce5aca0504b7925fc1c581992a4bf57f163e5d69cc1db7d836.css">
+
+  
+  <link rel="stylesheet" href="https://vnescape.github.io/css/post.min.e6dddd258e64c83e05cec0cd49c05216742d42fc8ecbfbe6b67083412b609bd3.css">
+
+  
+  <link rel="stylesheet" href="https://vnescape.github.io/css/syntax.min.a2cc694a9b481f15d41722bffc2cc54eea4c4f74fd9072b0b33253604c22606e.css">
+
+  
+  <link rel="stylesheet" href="https://vnescape.github.io/css/terminal.min.e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855.css">
+
+  
+  <link rel="stylesheet" href="https://vnescape.github.io/css/terms.min.b81791663c3790e738e571cdbf802312390d30e4b1d8dc9d814a5b5454d0ac11.css">
+
+
+
+
+
+
+
+<link rel="shortcut icon" href="https://vnescape.github.io/favicon.png">
+<link rel="apple-touch-icon" href="https://vnescape.github.io/apple-touch-icon.png">
+
+
+<meta name="twitter:card" content="summary" />
+
+  
+    <meta name="twitter:site" content="" />
+  
+    <meta name="twitter:creator" content="" />
+
+
+
+<meta property="og:locale" content="en" />
+<meta property="og:type" content="article" />
+<meta property="og:title" content="Building a fast, zero trust and secure Nextcloud server">
+<meta property="og:description" content="How I build my nextcloud server infrastructure to be fast, secure and with no external trust." />
+<meta property="og:url" content="https://vnescape.github.io/posts/nextcloud_fast_and_secure/" />
+<meta property="og:site_name" content="vnescape" />
+
+  
+  
+  <meta property="og:image" content="https://vnescape.github.io/">
+
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="627">
+
+
+  <meta property="article:published_time" content="2024-07-02 18:26:04 &#43;0200 CEST" />
+
+
+
+
+
+
+
+
+
+
+
+
+</head>
+<body>
+
+
+<div class="container center">
+
+  <header class="header">
+  <div class="header__inner">
+    <div class="header__logo">
+      <a href="/">
+  <div class="logo">
+    vnescape
+  </div>
+</a>
+
+    </div>
+    
+      <ul class="menu menu--mobile">
+  <li class="menu__trigger">Menu&nbsp;▾</li>
+  <li>
+    <ul class="menu__dropdown">
+      
+        
+          <li><a href="/about">About</a></li>
+        
+      
+        
+          <li><a href="/posts">Posts</a></li>
+        
+      
+      
+    </ul>
+  </li>
+</ul>
+
+    
+    
+  </div>
+  
+    <nav class="navigation-menu">
+  <ul class="navigation-menu__inner menu--desktop">
+    
+      
+        
+          <li><a href="/about" >About</a></li>
+        
+      
+        
+          <li><a href="/posts" >Posts</a></li>
+        
+      
+      
+    
+  </ul>
+</nav>
+
+  
+</header>
+
+
+  <div class="content">
+    
+<article class="post">
+  <h1 class="post-title">
+    <a href="https://vnescape.github.io/posts/nextcloud_fast_and_secure/">Building a fast, zero trust and secure Nextcloud server</a>
+  </h1>
+  <div class="post-meta"><time class="post-date">2024-07-02</time></div>
+
+  
+    <span class="post-tags">
+      
+      #<a href="https://vnescape.github.io/tags/nextcloud/">nextcloud</a>&nbsp;
+      
+      #<a href="https://vnescape.github.io/tags/rclone/">rclone</a>&nbsp;
+      
+      #<a href="https://vnescape.github.io/tags/smb/">smb</a>&nbsp;
+      
+      #<a href="https://vnescape.github.io/tags/linux/">linux</a>&nbsp;
+      
+    </span>
+  
+  
+
+
+  
+
+  <div class="post-content"><div>
+        <h2 id="why">Why?<a href="#why" class="hanchor" ariaLabel="Anchor">#</a> </h2>
+<p>Using cloud services is great. You can have your data in one place and you don&rsquo;t have to copy it between devices. But online cloud providers have some drawbacks. Mainly privacy and vendor lock-in. Most online cloud providers have access to your data, as you may want to back up sensitive content, this is a no go for me. Also, you can only choose between the cloud storage sizes offered, with no alternative to switching to cheaper storage down the line without changing the entire cloud provider and its software stack.</p>
+<blockquote>
+<p>Currently no solution is sufficient for my needs.</p>
+</blockquote>
+<h2 id="on-site-self-hosting">On site self hosting<a href="#on-site-self-hosting" class="hanchor" ariaLabel="Anchor">#</a> </h2>
+<p>One of the, if not the, most popular solutions to this problem is to host your own cloud. The advantage of this is that your data stays on your device and you can upgrade your storage or hardware as you wish. But with that power comes a lot of responsibility: you have to keep your hardware running, update the software, and deal with slow home internet speeds. The upfront costs can also be quite high.</p>
+<p>So self-hosting in your own home is less than ideal. What about using a VPS, i.e. a cloud computing provider? Here we have the problem that we don&rsquo;t have control over our data by default, as the cloud provider can technically inspect the data stored on their equipment.</p>
+<blockquote>
+<p>Self hosting is less than ideal most of the time. We want to use the cloud.</p>
+</blockquote>
+<h2 id="how-to-do-zero-trust-cloud-computing---defending-against-a-malicous-cloud-provider">How to do zero trust cloud computing? - defending against a malicous cloud provider<a href="#how-to-do-zero-trust-cloud-computing---defending-against-a-malicous-cloud-provider" class="hanchor" ariaLabel="Anchor">#</a> </h2>
+<p>First, there are two ways the data could be seen by the cloud provider in plain text: The hard drive or the RAM. We need to protect both from any external source so that only we have access to the data.</p>
+<blockquote>
+<p>Encrypt RAM, harddrive and any external storage.</p>
+</blockquote>
+<h2 id="encrypting-the-harddrive">Encrypting the harddrive<a href="#encrypting-the-harddrive" class="hanchor" ariaLabel="Anchor">#</a> </h2>
+<p>There is a great blog post that explains how to can enable <a href="https://community.hetzner.com/tutorials/install-ubuntu-2004-with-full-disk-encryption">full disk encryption on a cloud server</a>. This gives us the advantage that our data is encrypted at rest, but our server is running most of the time and needs to handle data as well as the encryption key somewhere in RAM. So how do we encrypt the RAM?</p>
+<h2 id="shifting-trust-to-the-silicon---amd-secure-encrypted-virtualization-sev">Shifting trust to the silicon - AMD Secure Encrypted Virtualization (SEV)<a href="#shifting-trust-to-the-silicon---amd-secure-encrypted-virtualization-sev" class="hanchor" ariaLabel="Anchor">#</a> </h2>
+<p>Basically, AMD SEV exposes the chip&rsquo;s ability to encrypt the virtual machine&rsquo;s RAM independently for each VM. This also protects the key from the hypervisor - in our case the cloud provider - so we can compute without the cloud provider knowing what data resides have in RAM.</p>
+<h2 id="encrypt-external-storage">Encrypt external storage<a href="#encrypt-external-storage" class="hanchor" ariaLabel="Anchor">#</a> </h2>
+<p>VPS storage can be quite expensive. Maybe you have some free cloud storage lying around from OneDrive or Google Drive. Or you might have bought a Hetzner storage box or some other external data storage. Most of them don&rsquo;t give you a way to run code to encrypt the storage yourself, for example. Wouldn&rsquo;t it be nice if we could somehow use this dumb storage to store our data and run our computing needs on a low storage VPS?</p>
+<p>The first problem we need to solve is: how do we mount/connect to the storage? <code>rclone</code> is a fantastic tool that can interface with most major cloud storage providers, so we can use rclone to mount our storage. However, for my external storage it was much faster to use <code>mount.cifs</code> to mount the storage using the SMB protocol. The command I use:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>mount.cifs -o user<span style="color:#f92672">=</span>username,pass<span style="color:#f92672">=</span>passw0rd //user.your-stroragedrive.com/folder /mnt/smb
+</span></span></code></pre></div><p>Now we need to encrypt the storage on our encrypted RAM, harddrive VPS before sending it to storage.</p>
+<p>rclone also provides a pipeline step to do just that: encrypt and decrypt storage requests using <code>rclone crypt</code>.</p>
+<p>Another problem we need to solve is that we want to use the storage as if it were a hard drive directly attached to our machine, so that nextcloud thinks it is not an external drive, because I find nextcloud&rsquo;s handling of external storage lackluster, we can do better! So, to make our I/O operations on our drive 100% reliable, we&rsquo;ll use the virtual filesystem feature for <code>rclone mount</code> to buffer all I/O operations.</p>
+<h2 id="making-all-of-it-fast---building-a-cache-hierachie">Making all of it fast - building a cache hierachie.<a href="#making-all-of-it-fast---building-a-cache-hierachie" class="hanchor" ariaLabel="Anchor">#</a> </h2>
+<p>We utilise different types of storage before our files and images are displayed by Nextloud. The storage hierarchy looks something like this:</p>
+<blockquote>
+<p>external storage &ndash;&gt; NVMe SSD &ndash;&gt; RAM</p>
+</blockquote>
+<p>To cache external storage I/O operations, we use the rclone vfs cache feature, so we can have a large cache, say 10GB, that can cache our latest photos and videos every time we view our timeline. To cache the files needed for nextcloud, we use reddis to cache those files in RAM. The command I use to mount the rclone vfs cache is as follows:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>rclone mount --daemon --vfs-cache-mode<span style="color:#f92672">=</span>full --allow-other --uid <span style="color:#ae81ff">33</span> --gid <span style="color:#ae81ff">33</span> --cache-dir /var/services/rclone/cache --vfs-cache-max-size 10G --vfs-read-ahead 32M --vfs-cache-max-age 72h --vfs-write-back 30s --dir-perms <span style="color:#ae81ff">0750</span> --file-perms <span style="color:#ae81ff">0644</span> storagebox_ENC: /var/services/rclone/decryptedStorage
+</span></span></code></pre></div><p>I changed the file and directory permissions so that the <code>www-data</code> user for the Nextcloud server can access our files.</p>
+<h2 id="making-the-server-secure---wireguard">Making the server secure - WireGuard<a href="#making-the-server-secure---wireguard" class="hanchor" ariaLabel="Anchor">#</a> </h2>
+<p>Personally, I don&rsquo;t trust Nextcloud or myself to keep up with all the latest emerging security threats (updating my server). So I don&rsquo;t want to expose my Nextcloud instance to the whole world wide web. Instead, I want to access it in an allow list fashion. So after enabling auto-update and only allowing public/private key authentication on my server, I also keep my Nextcloud instance behind a WireGuard VPN. Running all our traffic through WireGuard, as most tutorials on the web suggest, is a bit sub-optimal, as we only need to route the traffic to our server through WireGuard. This has the advantage that we can have our WireGuard connection open and always on, without the latency or speed penalty of using a VPN for all our traffic. So how do we do this? I will simply provide you with both the server and client configuration files for such a setup, as the WireGuard installation procedure is well documented online:</p>
+
+
+
+<details class="collapsable-code" >
+    <summary title="Click to interact"><span class="collapsable-code__title">wg0.conf</span></summary>
+    <div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"><code class="language-VIM" data-lang="VIM"><span style="display:flex;"><span>    [<span style="color:#a6e22e">Interface</span>]
+</span></span><span style="display:flex;"><span>    <span style="color:#a6e22e">Address</span> = <span style="color:#ae81ff">192</span>.<span style="color:#ae81ff">168</span>.<span style="color:#ae81ff">200</span>.<span style="color:#ae81ff">1</span>/<span style="color:#ae81ff">24</span> # <span style="color:#a6e22e">the</span> <span style="color:#a6e22e">IP</span> <span style="color:#a6e22e">of</span> <span style="color:#a6e22e">the</span> <span style="color:#a6e22e">server</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#a6e22e">ListenPort</span> = <span style="color:#ae81ff">51820</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    # <span style="color:#a6e22e">Adjust</span> <span style="color:#a6e22e">your</span> <span style="color:#a6e22e">network</span> <span style="color:#a6e22e">interface</span>. <span style="color:#a6e22e">enp1s0</span> <span style="color:#a6e22e">in</span> <span style="color:#a6e22e">my</span> <span style="color:#a6e22e">case</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#a6e22e">PrivateKey</span> = <span style="color:#a6e22e">your_private_key_of_wireguard</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#a6e22e">PostUp</span> = <span style="color:#a6e22e">iptables</span> -<span style="color:#a6e22e">A</span> <span style="color:#a6e22e">FORWARD</span> -<span style="color:#a6e22e">i</span> %<span style="color:#a6e22e">i</span> -<span style="color:#a6e22e">j</span> <span style="color:#a6e22e">ACCEPT</span>; <span style="color:#a6e22e">iptables</span> -<span style="color:#a6e22e">A</span> <span style="color:#a6e22e">FORWARD</span> -<span style="color:#a6e22e">o</span> %<span style="color:#a6e22e">i</span> -<span style="color:#a6e22e">j</span> <span style="color:#a6e22e">ACCEPT</span>; <span style="color:#a6e22e">iptables</span> -<span style="color:#a6e22e">t</span> <span style="color:#a6e22e">nat</span> -<span style="color:#a6e22e">A</span> <span style="color:#a6e22e">POSTROUTING</span> -<span style="color:#a6e22e">o</span> <span style="color:#a6e22e">enp1s0</span> -<span style="color:#a6e22e">j</span> <span style="color:#a6e22e">MASQUERADE</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#a6e22e">PostDown</span> = <span style="color:#a6e22e">iptables</span> -<span style="color:#a6e22e">D</span> <span style="color:#a6e22e">FORWARD</span> -<span style="color:#a6e22e">i</span> %<span style="color:#a6e22e">i</span> -<span style="color:#a6e22e">j</span> <span style="color:#a6e22e">ACCEPT</span>; <span style="color:#a6e22e">iptables</span> -<span style="color:#a6e22e">D</span> <span style="color:#a6e22e">FORWARD</span> -<span style="color:#a6e22e">o</span> %<span style="color:#a6e22e">i</span> -<span style="color:#a6e22e">j</span> <span style="color:#a6e22e">ACCEPT</span>; <span style="color:#a6e22e">iptables</span> -<span style="color:#a6e22e">t</span> <span style="color:#a6e22e">nat</span> -<span style="color:#a6e22e">D</span> <span style="color:#a6e22e">POSTROUTING</span> -<span style="color:#a6e22e">o</span> <span style="color:#a6e22e">enp1s0</span> -<span style="color:#a6e22e">j</span> <span style="color:#a6e22e">MASQUERADE</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    # <span style="color:#a6e22e">each</span> <span style="color:#a6e22e">device</span> <span style="color:#a6e22e">needs</span> <span style="color:#a6e22e">its</span> <span style="color:#a6e22e">own</span> <span style="color:#a6e22e">private</span>/<span style="color:#a6e22e">public</span> <span style="color:#a6e22e">key</span> <span style="color:#a6e22e">pair</span>!
+</span></span><span style="display:flex;"><span>    # <span style="color:#a6e22e">computer</span>
+</span></span><span style="display:flex;"><span>    [<span style="color:#a6e22e">Peer</span>]
+</span></span><span style="display:flex;"><span>    <span style="color:#a6e22e">PublicKey</span> = <span style="color:#a6e22e">public_key_of_computer</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#a6e22e">AllowedIPs</span> = <span style="color:#ae81ff">192</span>.<span style="color:#ae81ff">168</span>.<span style="color:#ae81ff">200</span>.<span style="color:#ae81ff">2</span>/<span style="color:#ae81ff">32</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    # <span style="color:#a6e22e">laptop</span>
+</span></span><span style="display:flex;"><span>    [<span style="color:#a6e22e">Peer</span>]
+</span></span><span style="display:flex;"><span>    <span style="color:#a6e22e">PublicKey</span> = <span style="color:#a6e22e">public_key_of_laptop</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#a6e22e">AllowedIPs</span> = <span style="color:#ae81ff">192</span>.<span style="color:#ae81ff">168</span>.<span style="color:#ae81ff">200</span>.<span style="color:#ae81ff">3</span>/<span style="color:#ae81ff">32</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    # <span style="color:#a6e22e">phone</span>
+</span></span><span style="display:flex;"><span>    [<span style="color:#a6e22e">Peer</span>]
+</span></span><span style="display:flex;"><span>    <span style="color:#a6e22e">PublicKey</span> = <span style="color:#a6e22e">public_key_of_phone</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#a6e22e">AllowedIPs</span> = <span style="color:#ae81ff">192</span>.<span style="color:#ae81ff">168</span>.<span style="color:#ae81ff">200</span>.<span style="color:#ae81ff">4</span>/<span style="color:#ae81ff">32</span></span></span></code></pre></div></details>
+
+
+
+
+<details class="collapsable-code" >
+    <summary title="Click to interact"><span class="collapsable-code__title">computer.conf</span></summary>
+    <div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"><code class="language-VIM" data-lang="VIM"><span style="display:flex;"><span>    [<span style="color:#a6e22e">Interface</span>]
+</span></span><span style="display:flex;"><span>    <span style="color:#a6e22e">PrivateKey</span> = <span style="color:#a6e22e">private_key_of_computer</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#a6e22e">Address</span> = <span style="color:#ae81ff">192</span>.<span style="color:#ae81ff">168</span>.<span style="color:#ae81ff">200</span>.<span style="color:#ae81ff">6</span>/<span style="color:#ae81ff">32</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    [<span style="color:#a6e22e">Peer</span>]
+</span></span><span style="display:flex;"><span>    <span style="color:#a6e22e">PublicKey</span> = <span style="color:#a6e22e">public_key_of_server</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#a6e22e">AllowedIPs</span> = <span style="color:#ae81ff">192</span>.<span style="color:#ae81ff">168</span>.<span style="color:#ae81ff">200</span>.<span style="color:#ae81ff">1</span>/<span style="color:#ae81ff">32</span> # <span style="color:#a6e22e">this</span> <span style="color:#a6e22e">will</span> <span style="color:#a6e22e">route</span> <span style="color:#a6e22e">only</span> <span style="color:#a6e22e">traffic</span> <span style="color:#a6e22e">going</span> <span style="color:#a6e22e">to</span> <span style="color:#a6e22e">the</span> <span style="color:#a6e22e">server</span> <span style="color:#a6e22e">through</span> <span style="color:#a6e22e">WireGuard</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#a6e22e">Endpoint</span> = <span style="color:#a6e22e">server_ip</span>:<span style="color:#ae81ff">51820</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#a6e22e">PersistentKeepalive</span> = <span style="color:#ae81ff">25</span></span></span></code></pre></div></details>
+
+<p>Make sure you set your firewall to only allow inbound traffic to the SSH port and the WireGuard port, and block all HTTP/S traffic coming from the Internet. Only allow HTTP traffic coming from the WireGuard tunnel.</p>
+<h2 id="installing-nextcloud">Installing Nextcloud<a href="#installing-nextcloud" class="hanchor" ariaLabel="Anchor">#</a> </h2>
+<p>I will only provide you with my <code>nextcloud.yml</code> file for my Docker Nextcloud instance as the installation process of Nextcloud is well documented online. Note that I installed aio-imaginary for faster preview image generation and ffmpeg in the Nextcloud image for hardware accelerated video encoding for streaming. But to be honest, these days I just stream my video files without re-encoding them first. The raw internet speed is just faster on my VPS rather than re-encoding the videos on the CPU.</p>
+
+
+
+<details class="collapsable-code" >
+    <summary title="Click to interact"><span class="collapsable-code__title">nextcloud.yml</span></summary>
+    <div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"><code class="language-yaml" data-lang="yaml"><span style="display:flex;"><span><span style="color:#f92672">version</span>: <span style="color:#e6db74">&#34;3&#34;</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">services</span>:
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">nextcloud</span>:
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">image</span>: <span style="color:#ae81ff">mycloudy/nextcloud-ffmpeg</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">build</span>: <span style="color:#ae81ff">.</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">container_name</span>: <span style="color:#ae81ff">nextcloud</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">restart</span>: <span style="color:#66d9ef">no</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">volumes</span>:
+</span></span><span style="display:flex;"><span>      - <span style="color:#ae81ff">/var/services/nextcloud:/var/www/html</span>
+</span></span><span style="display:flex;"><span>      - <span style="color:#ae81ff">/var/services/rclone/decryptedStorage/nextCloudData:/data</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">ports</span>:
+</span></span><span style="display:flex;"><span>      - <span style="color:#ae81ff">192.168.200.1</span>:<span style="color:#ae81ff">80</span>:<span style="color:#ae81ff">80</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">depends_on</span>:
+</span></span><span style="display:flex;"><span>      - <span style="color:#ae81ff">mysql8</span>
+</span></span><span style="display:flex;"><span>      - <span style="color:#ae81ff">redis</span>
+</span></span><span style="display:flex;"><span>      - <span style="color:#ae81ff">aio-imaginary</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">mysql8</span>:
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">image</span>: <span style="color:#ae81ff">mysql:8.4</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">container_name</span>: <span style="color:#ae81ff">mysql8</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">volumes</span>:
+</span></span><span style="display:flex;"><span>      - <span style="color:#ae81ff">/var/services/mysql:/var/lib/mysql</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">restart</span>: <span style="color:#66d9ef">no</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">environment</span>:
+</span></span><span style="display:flex;"><span>      <span style="color:#f92672">MYSQL_ROOT_PASSWORD</span>: <span style="color:#ae81ff">your_mysql_password</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">redis</span>:
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">image</span>: <span style="color:#ae81ff">valkey/valkey:8-alpine</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">container_name</span>: <span style="color:#ae81ff">redis</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">volumes</span>:
+</span></span><span style="display:flex;"><span>      - <span style="color:#ae81ff">/var/services/redis:/data</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">restart</span>: <span style="color:#66d9ef">no</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">aio-imaginary</span>:
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">image</span>: <span style="color:#ae81ff">nextcloud/aio-imaginary:latest</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">container_name</span>: <span style="color:#ae81ff">imaginary</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">cap_add</span>:
+</span></span><span style="display:flex;"><span>      - <span style="color:#ae81ff">SYS_NICE</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">restart</span>: <span style="color:#66d9ef">no</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">environment</span>:
+</span></span><span style="display:flex;"><span>      - <span style="color:#ae81ff">PORT=9000</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">command</span>: -<span style="color:#ae81ff">concurrency 50 -enable-url-source -log-level debug</span></span></span></code></pre></div></details>
+
+<h2 id="app-recommendation">App recommendation<a href="#app-recommendation" class="hanchor" ariaLabel="Anchor">#</a> </h2>
+<p>I recommend the Nextcloud app <a href="https://apps.nextcloud.com/apps/memories">memories</a> as it mimics the likes of Apple Photos or Google Photos and is just so much faster and more feature rich than Nextcloud Photos. On iOS, you can also place a PWA link to memories on your homescreen and interact with the site without the Safari UI bars.</p>
+<p>I would also recommend an alternative to the Nextcloud app&rsquo;s auto-upload for uploading images. Because the Nextcloud implementation is easily killed by iOS&rsquo;s limited background running and does not retry the next time it is opened. Also, the Nextcloud app on iOS is just horribly buggy. So I can recommend <a href="https://www.photosync-app.com/">PhotoSync</a> for uploading, it can sync in the background and just works.</p>
+
+      </div></div>
+
+  
+    
+
+  
+
+  
+    
+
+  
+</article>
+
+  </div>
+
+  
+    <footer class="footer">
+  <div class="footer__inner">
+    
+      <div class="copyright">
+        <span>© 2026 Powered by <a href="https://gohugo.io">Hugo</a></span>
+    
+      <span>:: <a href="https://github.com/panr/hugo-theme-terminal" target="_blank">Theme</a> made by <a href="https://github.com/panr" target="_blank">panr</a></span>
+      </div>
+  </div>
+</footer>
+
+
+
+
+
+
+<script type="text/javascript" src="/bundle.min.js"></script>
+
+
+
+
+
+  
+</div>
+
+</body>
+</html>

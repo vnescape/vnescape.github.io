@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Posts on vnescape</title>
+    <link>https://vnescape.github.io/posts/</link>
+    <description>Recent content in Posts on vnescape</description>
+    <generator>Hugo</generator>
+    <language>en-us</language>
+    <lastBuildDate>Tue, 02 Jul 2024 18:26:04 +0200</lastBuildDate>
+    <atom:link href="https://vnescape.github.io/posts/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>Building a fast, zero trust and secure Nextcloud server</title>
+      <link>https://vnescape.github.io/posts/nextcloud_fast_and_secure/</link>
+      <pubDate>Tue, 02 Jul 2024 18:26:04 +0200</pubDate>
+      <guid>https://vnescape.github.io/posts/nextcloud_fast_and_secure/</guid>
+      <description>&lt;h2 id=&#34;why&#34;&gt;Why?&lt;/h2&gt;&#xA;&lt;p&gt;Using cloud services is great. You can have your data in one place and you don&amp;rsquo;t have to copy it between devices. But online cloud providers have some drawbacks. Mainly privacy and vendor lock-in. Most online cloud providers have access to your data, as you may want to back up sensitive content, this is a no go for me. Also, you can only choose between the cloud storage sizes offered, with no alternative to switching to cheaper storage down the line without changing the entire cloud provider and its software stack.&lt;/p&gt;</description>
+    </item>
+  </channel>
+</rss>
